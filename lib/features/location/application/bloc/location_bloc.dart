@@ -20,7 +20,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
             final position = await iGeoLocatorFacade.getCurrentLocation();
             emit(LocationState.success(position: position));
           } catch (e) {
-            emit(const LocationState.error());
+            emit(LocationState.error(errorMessage: e.toString()));
           }
         },
       );

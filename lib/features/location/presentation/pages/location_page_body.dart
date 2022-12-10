@@ -7,27 +7,33 @@ class LocationPageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fetch User Location'),
-      ),
-      body: BlocBuilder<LocationBloc, LocationState>(
-        builder: (context, state) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        BlocBuilder<LocationBloc, LocationState>(builder: (context, state) {
           return state.map(
             initial: (_) => Container(),
             loading: (_) => const Center(
               child: CircularProgressIndicator(),
             ),
-            error: (_) => const Center(
-              child: Text('An error occurred'),
+            error: (e) => Center(
+              child: Text(e.errorMessage),
             ),
             success: (value) => Center(
               child: Text(
                   'Latitude: ${value.position.latitude}, Longitude: ${value.position.longitude}'),
             ),
           );
-        },
-      ),
+        }),
+        ElevatedButton(
+          onPressed: () {
+            context
+                .read<LocationBloc>()
+                .add(const LocationEvent.fetchLocation());
+          },
+          child: const Text("Fetch Location"),
+        )
+      ],
     );
   }
 }

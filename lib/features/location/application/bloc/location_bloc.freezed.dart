@@ -170,7 +170,7 @@ mixin _$LocationState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMessage) error,
     required TResult Function(Position position) success,
   }) =>
       throw _privateConstructorUsedError;
@@ -178,7 +178,7 @@ mixin _$LocationState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMessage)? error,
     TResult? Function(Position position)? success,
   }) =>
       throw _privateConstructorUsedError;
@@ -186,7 +186,7 @@ mixin _$LocationState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMessage)? error,
     TResult Function(Position position)? success,
     required TResult orElse(),
   }) =>
@@ -274,7 +274,7 @@ class _$Initial implements Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMessage) error,
     required TResult Function(Position position) success,
   }) {
     return initial();
@@ -285,7 +285,7 @@ class _$Initial implements Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMessage)? error,
     TResult? Function(Position position)? success,
   }) {
     return initial?.call();
@@ -296,7 +296,7 @@ class _$Initial implements Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMessage)? error,
     TResult Function(Position position)? success,
     required TResult orElse(),
   }) {
@@ -386,7 +386,7 @@ class _$Loading implements Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMessage) error,
     required TResult Function(Position position) success,
   }) {
     return loading();
@@ -397,7 +397,7 @@ class _$Loading implements Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMessage)? error,
     TResult? Function(Position position)? success,
   }) {
     return loading?.call();
@@ -408,7 +408,7 @@ class _$Loading implements Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMessage)? error,
     TResult Function(Position position)? success,
     required TResult orElse(),
   }) {
@@ -464,6 +464,8 @@ abstract class Loading implements LocationState {
 abstract class _$$ErrorCopyWith<$Res> {
   factory _$$ErrorCopyWith(_$Error value, $Res Function(_$Error) then) =
       __$$ErrorCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String errorMessage});
 }
 
 /// @nodoc
@@ -472,36 +474,61 @@ class __$$ErrorCopyWithImpl<$Res>
     implements _$$ErrorCopyWith<$Res> {
   __$$ErrorCopyWithImpl(_$Error _value, $Res Function(_$Error) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? errorMessage = null,
+  }) {
+    return _then(_$Error(
+      errorMessage: null == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$Error implements Error {
-  const _$Error();
+  const _$Error({required this.errorMessage});
+
+  @override
+  final String errorMessage;
 
   @override
   String toString() {
-    return 'LocationState.error()';
+    return 'LocationState.error(errorMessage: $errorMessage)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$Error);
+        (other.runtimeType == runtimeType &&
+            other is _$Error &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, errorMessage);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ErrorCopyWith<_$Error> get copyWith =>
+      __$$ErrorCopyWithImpl<_$Error>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMessage) error,
     required TResult Function(Position position) success,
   }) {
-    return error();
+    return error(errorMessage);
   }
 
   @override
@@ -509,10 +536,10 @@ class _$Error implements Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMessage)? error,
     TResult? Function(Position position)? success,
   }) {
-    return error?.call();
+    return error?.call(errorMessage);
   }
 
   @override
@@ -520,12 +547,12 @@ class _$Error implements Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMessage)? error,
     TResult Function(Position position)? success,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error();
+      return error(errorMessage);
     }
     return orElse();
   }
@@ -569,7 +596,11 @@ class _$Error implements Error {
 }
 
 abstract class Error implements LocationState {
-  const factory Error() = _$Error;
+  const factory Error({required final String errorMessage}) = _$Error;
+
+  String get errorMessage;
+  @JsonKey(ignore: true)
+  _$$ErrorCopyWith<_$Error> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -637,7 +668,7 @@ class _$Success implements Success {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function() error,
+    required TResult Function(String errorMessage) error,
     required TResult Function(Position position) success,
   }) {
     return success(position);
@@ -648,7 +679,7 @@ class _$Success implements Success {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function()? error,
+    TResult? Function(String errorMessage)? error,
     TResult? Function(Position position)? success,
   }) {
     return success?.call(position);
@@ -659,7 +690,7 @@ class _$Success implements Success {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function()? error,
+    TResult Function(String errorMessage)? error,
     TResult Function(Position position)? success,
     required TResult orElse(),
   }) {
